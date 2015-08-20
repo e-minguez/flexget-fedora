@@ -1,0 +1,59 @@
+templates:
+  global:
+    clean_transmission:
+      host: localhost
+      port: 9091
+      username: USERNAME
+      password: PASSWORD
+      finished_for: 2 hours
+      min_ratio: 1
+    disable: [details]
+    # configuration of email parameters
+    # each feed will send an email with the accepted entries 
+    # can be disabled per feed with email: active: False
+    email:
+      active: True
+      from: FROM
+      to: TO
+      smtp_host: smtp.gmail.com
+      smtp_port: 587
+      smtp_login: true
+      smtp_username: USERNAME
+      smtp_password: PASSWORD
+      smtp_tls: true
+tasks:
+  # downloading task
+  download-rss:
+    rss: http://showrss.info/rss.php?user_id=SHOWRSS_ID&hd=1&proper=1&namespaces=true&magnets=true
+    # fetch all the feed series
+    all_series: yes
+    limit_new: 10  
+    # use transmission to download the torrents
+    transmission:
+      host: localhost
+      port: 9091
+      username: USERNAME
+      password: PASSWORD
+    only_new: yes
+  # sorting task
+  sort-files:
+    find:
+      # directory with the files to be sorted
+      path: /home/flexget/flexget/from/
+      # fetch all avi, mkv and mp4 files, skips the .part files (unfinished torrents)
+      regexp: '.*\.(avi|mkv|mp4)$'
+      recursive: yes
+    accept_all: yes
+    seen: local
+    regexp:
+      reject:
+        - sample
+    # this is needed for the episode names
+    thetvdb_lookup: yes
+    all_series:
+      parse_only: yes
+    move:
+      # this is where the series will be put
+      to: /home/flexget/flexget/to/{{ tvdb_series_name }}
+      # save the file as "Series Name - SxxEyy - Episode Name.ext"
+      filename: '{{ tvdb_series_name }} - {{ series_id }} - {{ tvdb_ep_name }}{{ location | pathext }}'
