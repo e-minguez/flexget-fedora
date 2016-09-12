@@ -1,5 +1,6 @@
 flexget-fedora
 ==============
+[![](https://images.microbadger.com/badges/image/eminguez/flexget-fedora.svg)](https://microbadger.com/images/eminguez/flexget-fedora "Get your own image badge on microbadger.com")
 
 Flexget Docker Container based in Fedora
 
